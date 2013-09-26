@@ -144,8 +144,8 @@ class Poprender(object):
         self.dwg.set_size_request(int(self.width), int(self.height))
         self.dwg.connect("expose-event", self.on_expose)
 
-        self.sw.connect("button-press-event", self.on_btn_down)
-        self.sw.connect("button-release-event", self.on_btn_up)
+        self.sw.connect("button-press-event", self.on_btn_pressed)
+        self.sw.connect("button-release-event", self.on_btn_released)
         self.sw.connect("motion-notify-event", self.on_mouse_move)
 
         eventbox = gtk.EventBox()
@@ -179,21 +179,33 @@ class Poprender(object):
         if self.sel2_y < 0:
             self.sel2_y = 0
 
-    def on_btn_down(self, widget, event):
-        self.sel_x = event.x/self.scale
-        self.sel_y = event.y/self.scale
-        self.sel2_x = event.x/self.scale
-        self.sel2_y = event.y/self.scale
-        self.sel_pos_clip()
-        self.sel = True
+    def on_btn_pressed(self, widget, event):
+        "excuted when mouse is pressed"
 
-    def on_btn_up(self, widget, event):
+        if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
+            menu = gtk.Menu()
+            menu_item = gtk.MenuItem("A")
+            menu.append(menu_item)
+            menu_item.show()
+            menu.popup(None, None, None, event.button, event.time, None)
+
+        if event.button == 1:
+
+            self.sel_x = event.x/self.scale
+            self.sel_y = event.y/self.scale
+            self.sel2_x = event.x/self.scale
+            self.sel2_y = event.y/self.scale
+            self.sel_pos_clip()
+            self.sel = True
+
+    def on_btn_released(self, widget, event):
         self.sel2_x = event.x/self.scale
         self.sel2_y = event.y/self.scale
         self.sel_pos_clip()
         self.dwg.queue_draw()
 
     def on_mouse_move(self, widget, event):
+        "called after the selection rectangle is shown"
         self.sel2_x = event.x/self.scale
         self.sel2_y = event.y/self.scale
         self.sel_pos_clip()
@@ -214,6 +226,8 @@ class Poprender(object):
         self.dwg.queue_draw()
 
     def cr_draw(self, cr, width, height, scale):
+        "draw pdf on the canvas"
+
         if scale != 1:
             cr.scale(scale, scale)
         cr.set_source_rgb(1, 1, 1)
