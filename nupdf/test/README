@@ -1,0 +1,5 @@
+to run the tests you need:
+
+* https://pypi.python.org/pypi/PyPDF2/1.18
+* https://fedorahosted.org/dogtail/
+
