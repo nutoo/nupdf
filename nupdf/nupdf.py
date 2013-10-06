@@ -298,15 +298,3 @@ class Poprender(object):
 
     def main(self):
         gtk.main()
-
-
-if __name__ == '__main__':
-    try:
-        if len(sys.argv) == 2:
-            pop = Poprender()
-            pop.main()
-        else:
-            print "Usage:"
-            print os.path.basename(sys.argv[0]) + " filename.pdf"
-    except KeyboardInterrupt:
-        __name__
